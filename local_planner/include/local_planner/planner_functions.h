@@ -39,7 +39,8 @@ void propagateHistogram(
     const Eigen::Vector3f& position);
 void generateNewHistogram(Histogram& polar_histogram,
                           const pcl::PointCloud<pcl::PointXYZ>& cropped_cloud,
-                          const Eigen::Vector3f& position);
+                          const Eigen::Vector3f& position,
+                          const Eigen::Vector3f& n_points_occupied);
 void combinedHistogram(bool& hist_empty, Histogram& new_hist,
                        const Histogram& propagated_hist,
                        bool waypoint_outside_FOV,

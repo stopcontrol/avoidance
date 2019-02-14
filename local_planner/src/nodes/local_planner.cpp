@@ -53,6 +53,7 @@ void LocalPlanner::dynamicReconfigureSetParams(
 
   no_progress_slope_ = config.no_progress_slope_;
   min_cloud_size_ = config.min_cloud_size_;
+  n_points_occupied_ = config.n_points_occupied_;
   min_realsense_dist_ = config.min_realsense_dist_;
   min_dist_backoff_ = config.min_dist_backoff_;
   pointcloud_timeout_hover_ = config.pointcloud_timeout_hover_;
@@ -135,7 +136,7 @@ void LocalPlanner::create2DObstacleRepresentation(const bool send_to_fcu) {
   propagateHistogram(propagated_histogram, reprojected_points_,
                      reprojected_points_age_, toEigen(pose_.pose.position));
   generateNewHistogram(new_histogram, final_cloud_,
-                       toEigen(pose_.pose.position));
+                       toEigen(pose_.pose.position), n_points_occupied_);
   combinedHistogram(hist_is_empty_, new_histogram, propagated_histogram,
                     waypoint_outside_FOV_, z_FOV_idx_, e_FOV_min_, e_FOV_max_);
   if (send_to_fcu) {
