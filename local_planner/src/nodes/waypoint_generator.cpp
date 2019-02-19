@@ -101,7 +101,7 @@ void WaypointGenerator::setFOV(float h_FOV, float v_FOV) {
 void WaypointGenerator::updateState(const geometry_msgs::PoseStamped& act_pose,
                                     const geometry_msgs::PoseStamped& goal,
                                     const geometry_msgs::TwistStamped& vel,
-                                    bool stay) {
+                                    bool stay, bool airborne) {
   if ((goal_ - toEigen(goal.pose.position)).norm() > 0.1f) {
     reached_goal_ = false;
   }
@@ -118,6 +118,7 @@ void WaypointGenerator::updateState(const geometry_msgs::PoseStamped& act_pose,
   if (stay) {
     planner_info_.waypoint_type = hover;
   }
+  airborne_ = airborne;
 }
 
 // if there isn't any obstacle in front of the UAV, increase cruising speed
@@ -181,13 +182,9 @@ bool WaypointGenerator::withinGoalRadius() {
 void WaypointGenerator::reachGoalAltitudeFirst() {
   // goto_position is a unit vector pointing straight up from current location
   output_.goto_position = pose_.pose.position;
-  output_.goto_position.z += 1.0f;
-
-  // Will be overwritten by adaptSpeed()
-  output_.adapted_goto_position = output_.goto_position;
-
-  // Will be overwritten by smoothWaypoint()
-  output_.smoothed_goto_position = output_.goto_position;
+  if(airborne_){
+      output_.goto_position.z += 1.0f;
+  }
 }
 
 void WaypointGenerator::smoothWaypoint(float dt) {
