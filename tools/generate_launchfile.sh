@@ -82,7 +82,6 @@ done
 cat >> local_planner/launch/avoidance.launch <<- EOM
     <!-- Launch avoidance -->
     <env name="ROSCONSOLE_CONFIG_FILE" value="\$(find local_planner)/resource/custom_rosconsole.conf"/>
-    <rosparam command="load" file="\$(find local_planner)/cfg/params.yaml"/>
     <arg name="pointcloud_topics" default="[$camera_topics]"/>
 
     <node name="local_planner_node" pkg="local_planner" type="local_planner_node" output="screen" >
