@@ -200,10 +200,11 @@ void WaypointGenerator::reachGoalAltitudeFirst() {
 void WaypointGenerator::smoothWaypoint(float dt) {
   // In first iteration (very small or invalid dt), initialize the smoothing
   // to start at the current drone location
-  if (dt <= 0.01f) {
+  if (dt <= 0.001f) {
     smoothed_goto_location_ = toEigen(pose_.pose.position);
     output_.smoothed_goto_position =
         pose_.pose.position;  // needs to be local position!
+        ROS_ERROR("Resetting smoothing to local position!");// for debug purpose only
     return;
   }
 
@@ -279,9 +280,12 @@ void WaypointGenerator::adaptSpeed() {
   float angle_diff_deg =
       std::abs(nextYaw(pose_, output_.goto_position) - curr_yaw_) * 180.f /
       M_PI_F;
+  angle_diff_deg = std::min(angle_diff_deg, std::abs(360.f - angle_diff_deg));
   angle_diff_deg = std::min(h_FOV_ / 2, angle_diff_deg);  // Clamp at h_FOV/2
-  speed_ =
-      speed_ * (1.0f - 2 * angle_diff_deg / h_FOV_);  // throttle if outside FOV
+  if(angle_diff_deg > h_FOV_/ 3){
+    speed_ =
+        speed_ * (1.0f - 2 * angle_diff_deg / h_FOV_);  // throttle if outside FOV
+  }
 
   // Scale the pose_to_wp by the speed
   Eigen::Vector3f pose_to_wp =
