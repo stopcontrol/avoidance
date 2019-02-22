@@ -200,13 +200,13 @@ void WaypointGenerator::reachGoalAltitudeFirst() {
 void WaypointGenerator::smoothWaypoint(float dt) {
   // In first iteration (very small or invalid dt), initialize the smoothing
   // to start at the current drone location
-  if (dt <= 0.001f) {
-    smoothed_goto_location_ = toEigen(pose_.pose.position);
-    output_.smoothed_goto_position =
-        pose_.pose.position;  // needs to be local position!
-        ROS_ERROR("Resetting smoothing to local position!");// for debug purpose only
-    return;
-  }
+  // if (dt <= 0.001f) {
+  //   smoothed_goto_location_ = toEigen(pose_.pose.position);
+  //   output_.smoothed_goto_position =
+  //       pose_.pose.position;  // needs to be local position!
+  //       ROS_ERROR("Resetting smoothing to local position!");// for debug purpose only
+  //   return;
+  // }
 
   // If the smoothing speed is set to zero, dont smooth, aka use adapted
   // waypoint directly
@@ -315,6 +315,7 @@ void WaypointGenerator::getPathMsg() {
 
   float time_diff_sec =
       static_cast<float>((current_time_ - last_time_).toSec());
+  ROS_ERROR("TIME DIFF: %f", time_diff_sec);
   float dt = time_diff_sec > 0.0f ? time_diff_sec : 0.0001f;
 
   // set the yaw at the setpoint based on our smoothed location
