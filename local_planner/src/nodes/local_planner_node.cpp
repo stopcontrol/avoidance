@@ -136,7 +136,6 @@ void LocalPlannerNode::readParams() {
 
   nh_.param<std::string>("world_name", world_path_, "");
   goal_msg_.pose.position = goal;
-
 }
 
 void LocalPlannerNode::initializeCameraSubscribers(
